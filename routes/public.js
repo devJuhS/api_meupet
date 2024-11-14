@@ -1,41 +1,33 @@
-// definindo rota publica
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
+const usersController = require('../controllers/usersController');
+const produtoController = require('../controllers/produtoController');
+const petController = require('../controllers/petController');
 
-const path = require('path')
-const usersController = require('../controllers/usersController') // Certifique-se de que o caminho do controlador está correto
+// Rotas para Users
+router.post('/users', usersController.create);
+router.get('/users', usersController.showAll);
+router.get('/users/:id', usersController.showOne);
+router.put('/users/:id', usersController.update);
+router.delete('/users/:id', usersController.delete);
 
-router.use(express.static('public'))
+// Rotas para Produto
+router.post('/produto', produtoController.create);
+router.get('/produto', produtoController.showAll);
+router.get('/produto/:id', produtoController.showOne);
+router.put('/produto/:id', produtoController.update);
+router.delete('/produto/:id', produtoController.delete);
 
-router.get('/', (request, response) => {
-    response.send('Servidor rodando na rota normalmente')
-})
+// Rotas para Pet
+router.post('/pet', petController.create);
+router.get('/pet', petController.showAll);
+router.get('/pet/:id', petController.showOne);
+router.put('/pet/:id', petController.update);
+router.delete('/pet/:id', petController.delete);
 
-//rota para tabela cliente
-router.post('/users', usersController.create)
-router.get('/users', usersController.showAll) // Corrigido para 'usersController'
-router.get('/users/:id', usersController.showOne) // Corrigido para 'usersController'
-router.put('/users/:id', usersController.update) // Corrigido para 'usersController'
-router.delete('/users/:id', usersController.delete) // Corrigido para 'usersController'
+// Middleware para rotas não encontradas
+router.use((req, res) => {
+    res.status(404).send('Rota não encontrada');
+});
 
-
-// rota para tabela produto 
-router.post('/produto', usersController.create)
-router.get('/produto', usersController.showAll) 
-router.get('/produto/:id', usersController.showOne) 
-router.put('/produto/:id', usersController.update) 
-router.delete('/produto/:id', usersController.delete) 
-
-// rota para tabela pet 
-router.post('/pet', usersController.create)
-router.get('/pet', usersController.showAll) 
-router.get('/pet/:id', usersController.showOne) 
-router.put('/pet/:id', usersController.update) 
-router.delete('/pet/:id', usersController.delete) 
-
-
-router.use((request, response, next) => {
-    response.status(404).send('Rota não encontrada')
-})
-
-module.exports = router
+module.exports = router;

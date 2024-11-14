@@ -14,7 +14,11 @@ module.exports = class PetController {
     static async showOne(req, res) {
         try {
             const pet = await Pet.findByPk(req.params.id);
-            res.send(pet);
+            if (pet) {
+                res.send(pet);
+            } else {
+                res.status(404).json({ message: 'Pet não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar o pet', error });
         }
@@ -23,12 +27,14 @@ module.exports = class PetController {
     static async create(req, res) {
         try {
             const pet = await Pet.create({
-                nome: req.body.nome,
-                idade: req.body.idade,
-                especie: req.body.especie,
-                raca: req.body.raca,
+                nome_pet: req.body.nome_pet,
+                sexo_pet: req.body.sexo_pet,
+                castracao: req.body.castracao,
+                raca_pet: req.body.raca_pet,
+                peso_pet: req.body.peso_pet,
+                petid_user: req.body.petid_user,
             });
-            res.send(pet);
+            res.status(201).send(pet);
         } catch (error) {
             res.status(500).json({ message: 'Erro ao criar o pet', error });
         }
@@ -36,18 +42,24 @@ module.exports = class PetController {
 
     static async update(req, res) {
         try {
-            await Pet.update(
+            const result = await Pet.update(
                 {
-                    nome: req.body.nome,
-                    idade: req.body.idade,
-                    especie: req.body.especie,
-                    raca: req.body.raca,
+                    nome_pet: req.body.nome_pet,
+                    sexo_pet: req.body.sexo_pet,
+                    castracao: req.body.castracao,
+                    raca_pet: req.body.raca_pet,
+                    peso_pet: req.body.peso_pet,
+                    petid_user: req.body.petid_user,
                 },
                 {
-                    where: { id: req.params.id },
+                    where: { id_pet: req.params.id },
                 }
             );
-            res.send({ message: 'Pet atualizado com sucesso' });
+            if (result[0] === 1) {
+                res.send({ message: 'Pet atualizado com sucesso' });
+            } else {
+                res.status(404).json({ message: 'Pet não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao atualizar o pet', error });
         }
@@ -56,8 +68,12 @@ module.exports = class PetController {
     static async delete(req, res) {
         try {
             const pet = await Pet.findByPk(req.params.id);
-            await pet.destroy();
-            res.send({ message: 'Pet deletado com sucesso' });
+            if (pet) {
+                await pet.destroy();
+                res.send({ message: 'Pet deletado com sucesso' });
+            } else {
+                res.status(404).json({ message: 'Pet não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao deletar o pet', error });
         }
