@@ -1,11 +1,11 @@
-const { Product } = require('../models');
+const { Produto } = require('../models');
 require('dotenv').config();
 
-module.exports = class ProductController {
+module.exports = class produtoController {
     static async showAll(req, res) {
         try {
-            const products = await Product.findAll();
-            res.send(products);
+            const produtos = await Produto.findAll(); // Variável ajustada para plural
+            res.send(produtos);
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar produtos', error });
         }
@@ -13,8 +13,12 @@ module.exports = class ProductController {
 
     static async showOne(req, res) {
         try {
-            const product = await Product.findByPk(req.params.id);
-            res.send(product);
+            const produto = await Produto.findByPk(req.params.id);
+            if (produto) {
+                res.send(produto);
+            } else {
+                res.status(404).json({ message: 'Produto não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar o produto', error });
         }
@@ -22,13 +26,15 @@ module.exports = class ProductController {
 
     static async create(req, res) {
         try {
-            const product = await Product.create({
-                nome_produto: req.body.nome,
-                descricao_produto: req.body.descricao,
-                preco_produto: req.body.preco,
-                estoque_produto: req.body.estoque,
+            const produto = await Produto.create({
+                nome_produto: req.body.nome_produto,
+                descricao_produto: req.body.descricao_produto,
+                preco_produto: req.body.preco_produto,
+                quantidade_estoque: req.body.quantidade_estoque,
+                categoria_produto: req.body.categoria_produto,
+                data_adicionado: req.body.data_adicionado
             });
-            res.send(product);
+            res.status(201).send(produto);
         } catch (error) {
             res.status(500).json({ message: 'Erro ao criar o produto', error });
         }
@@ -36,18 +42,24 @@ module.exports = class ProductController {
 
     static async update(req, res) {
         try {
-            await Product.update(
+            const produto = await Produto.update(
                 {
-                    nome: req.body.nome,
-                    descricao: req.body.descricao,
-                    preco: req.body.preco,
-                    estoque: req.body.estoque,
+                    nome_produto: req.body.nome_produto,
+                    descricao_produto: req.body.descricao_produto,
+                    preco_produto: req.body.preco_produto,
+                    quantidade_estoque: req.body.quantidade_estoque,
+                    categoria_produto: req.body.categoria_produto,
+                    data_adicionado: req.body.data_adicionado
                 },
                 {
-                    where: { id: req.params.id },
+                    where: { id_produto: req.params.id },
                 }
             );
-            res.send({ message: 'Produto atualizado com sucesso' });
+            if (produto[0] === 1) {
+                res.send({ message: 'Produto atualizado com sucesso' });
+            } else {
+                res.status(404).json({ message: 'Produto não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao atualizar o produto', error });
         }
@@ -55,11 +67,16 @@ module.exports = class ProductController {
 
     static async delete(req, res) {
         try {
-            const product = await Product.findByPk(req.params.id);
-            await product.destroy();
-            res.send({ message: 'Produto deletado com sucesso' });
+            const produto = await Produto.findByPk(req.params.id);
+            if (produto) {
+                await produto.destroy();
+                res.send({ message: 'Produto deletado com sucesso' });
+            } else {
+                res.status(404).json({ message: 'Produto não encontrado' });
+            }
         } catch (error) {
             res.status(500).json({ message: 'Erro ao deletar o produto', error });
         }
     }
 };
+
