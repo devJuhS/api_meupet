@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/usersController');
-const produtoController = require('../controllers/produtoController');
+const produtosController = require('../controllers/produtosController');
 const petController = require('../controllers/petController');
 
 // Rotas para Users
@@ -12,11 +12,11 @@ router.put('/users/:id', usersController.update);
 router.delete('/users/:id', usersController.delete);
 
 // Rotas para Produto
-router.post('/produto', produtoController.create);
-router.get('/produto', produtoController.showAll);
-router.get('/produto/:id', produtoController.showOne);
-router.put('/produto/:id', produtoController.update);
-router.delete('/produto/:id', produtoController.delete);
+router.post('/produtos', produtosController.create);
+router.get('/produtos', produtosController.showAll);
+router.get('/produtos/:id', produtosController.showOne);
+router.put('/produtos/:id', produtosController.update);
+router.delete('/produtos/:id', produtosController.delete);
 
 // Rotas para Pet
 router.post('/pet', petController.create);
