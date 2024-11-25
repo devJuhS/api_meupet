@@ -4,6 +4,11 @@ const usersController = require('../controllers/usersController');
 const produtosController = require('../controllers/produtosController');
 const petController = require('../controllers/petController');
 
+// Rota para boas-vindas
+router.get ('/', (req, res) => {
+    res.send('Bem-vindo!')
+})
+
 // Rotas para Users
 router.post('/users', usersController.create);
 router.get('/users', usersController.showAll);
