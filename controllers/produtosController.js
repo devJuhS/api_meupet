@@ -1,11 +1,11 @@
-const { Produto } = require('../models');
+const { Produtos } = require('../models');
 require('dotenv').config();
 
-module.exports = class produtoController {
+module.exports = class ProdutosController {
     static async showAll(req, res) {
         try {
-            const produtos = await Produto.findAll(); // Variável ajustada para plural
-            res.send(produtos);
+            const produtos = await Produtos.findAll(); // Certifique-se do nome correto
+            res.send(produtos); // Enviando a resposta certa
         } catch (error) {
             res.status(500).json({ message: 'Erro ao buscar produtos', error });
         }
@@ -13,7 +13,7 @@ module.exports = class produtoController {
 
     static async showOne(req, res) {
         try {
-            const produto = await Produto.findByPk(req.params.id);
+            const produto = await Produtos.findByPk(req.params.id); // Corrigido para usar "Produtos"
             if (produto) {
                 res.send(produto);
             } else {
@@ -26,7 +26,7 @@ module.exports = class produtoController {
 
     static async create(req, res) {
         try {
-            const produto = await Produto.create({
+            const produto = await Produtos.create({ // Corrigido para usar "Produtos"
                 nome_produto: req.body.nome_produto,
                 descricao_produto: req.body.descricao_produto,
                 preco_produto: req.body.preco_produto,
@@ -42,7 +42,7 @@ module.exports = class produtoController {
 
     static async update(req, res) {
         try {
-            const produto = await Produto.update(
+            const produto = await Produtos.update( // Corrigido para usar "Produtos"
                 {
                     nome_produto: req.body.nome_produto,
                     descricao_produto: req.body.descricao_produto,
@@ -67,7 +67,7 @@ module.exports = class produtoController {
 
     static async delete(req, res) {
         try {
-            const produto = await Produto.findByPk(req.params.id);
+            const produto = await Produtos.findByPk(req.params.id); // Corrigido para usar "Produtos"
             if (produto) {
                 await produto.destroy();
                 res.send({ message: 'Produto deletado com sucesso' });
@@ -79,4 +79,3 @@ module.exports = class produtoController {
         }
     }
 };
-
