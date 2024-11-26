@@ -48,3 +48,5 @@ module.exports = (sequelize) => {
 
     return Produtos;
 };
+
+//teste//
