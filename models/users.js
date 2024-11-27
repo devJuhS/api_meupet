@@ -32,5 +32,3 @@ module.exports = (sequelize) => {
 
     return Users;
 };
-
-//teste//

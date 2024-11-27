@@ -33,5 +33,3 @@ module.exports = (sequelize) => {
 
     return Pet;
 };
-
-//teste//
