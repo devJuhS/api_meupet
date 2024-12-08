@@ -1,6 +1,7 @@
 'use strict';
 
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes, STRING } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
     class Users extends Model {
@@ -21,14 +22,29 @@ module.exports = (sequelize) => {
             type: DataTypes.ENUM('Masculino', 'Feminino', 'Outro'), 
             allowNull: false 
         },
-        dt_nasc_user: { type: DataTypes.DATEONLY, allowNull: false }
+        dt_nasc_user: { type: DataTypes.DATEONLY, allowNull: false },
+        senha_user: {type: DataTypes.STRING(255), allowNull: false}
       },
       {
         sequelize,
         modelName: 'Users',
         tableName: 'users',
-      }
-    )
+        hooks: {
+          beforeCreate: async (user) => {
+              if (user.senha_user) {
+                  const salt = await bcrypt.genSalt(12);
+                  user.senha_user = await bcrypt.hash(user.senha_user, salt);
+              }
+          },
+          beforeUpdate: async (user) => {
+              if (user.changed('senha_user')) {
+                  const salt = await bcrypt.genSalt(12);
+                  user.senha_user = await bcrypt.hash(user.senha_user, salt);
+              }
+          },
+      },
+  }
+);
 
-    return Users;
+return Users;
 };

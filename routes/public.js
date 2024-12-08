@@ -9,6 +9,9 @@ router.get ('/', (req, res) => {
     res.send('Bem-vindo!')
 })
 
+// Rota de login
+router.get('/login', usersController.login);
+
 // Rotas para Users
 router.post('/users', usersController.create);
 router.get('/users', usersController.showAll);
