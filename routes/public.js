@@ -9,31 +9,57 @@ router.get ('/', (req, res) => {
     res.send('Bem-vindo!')
 })
 
+
+
 // Rota de login
 router.get('/login', usersController.login);
+/**
+ * @openapi
+ * /login:
+ *   get:
+ *     summary: "Rota de login"
+ *     description: "Rota para realizar o login do usuário."
+ *     responses:
+ *       200:
+ *         description: "Login realizado com sucesso"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: "Token de autenticação"
+ *       401:
+ *         description: "Credenciais inválidas"
+ */
 
-// Rotas para Users
-router.post('/users', usersController.create);
-router.get('/users', usersController.showAll);
-router.get('/users/:id', usersController.showOne);
-router.put('/users/:id', usersController.update);
-router.delete('/users/:id', usersController.delete);
 
-// Rotas para Produto
-router.post('/produtos', produtosController.create);
-router.get('/produtos', produtosController.showAll);
-router.get('/produtos/:id', produtosController.showOne);
-router.put('/produtos/:id', produtosController.update);
-router.delete('/produtos/:id', produtosController.delete);
+// Rotas de usuários
+router.use('/users', usersRoute);
 
-// Rotas para Pet
-router.post('/pet', petController.create);
-router.get('/pet', petController.showAll);
-router.get('/pet/:id', petController.showOne);
-router.put('/pet/:id', petController.update);
-router.delete('/pet/:id', petController.delete);
+// Rotas de produtos
+router.use('/produtos', produtosRoute);
+
+// Rotas de pets
+router.use('/pet', petRoute);
+
+
+  // Rota para exibir a documentação da API
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  
 
 // Middleware para rotas não encontradas
+/**
+ * @openapi
+ * /{any}:
+ *   all:
+ *     summary: "Rota não encontrada"
+ *     description: "Middleware para todas as rotas não definidas."
+ *     responses:
+ *       404:
+ *         description: "Rota não encontrada"
+ */
 router.use((req, res) => {
     res.status(404).send('Rota não encontrada');
 });

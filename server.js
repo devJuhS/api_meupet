@@ -31,6 +31,11 @@ const { Sequelize } = require('sequelize');
 const publicRoutes = require('./routes/public');
 const privateRoutes = require('./routes/private');
 const authMiddleware = require('./middlewares/authMiddleware'); // Middleware de autenticação
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDocs = require('./swaggerOptions'); // Importar as configurações do Swagger
+const userValidator = require('./joi'); // Importando o validador Joi
+
+
 
 require('dotenv').config();
 const app = express();
@@ -50,6 +55,25 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+// Função para validar os dados da requisição com Joi
+function validarDados(req, res, next) {
+    const { error } = userValidator.validate(req.body); // Usando o userValidator importado
+    if (error) {
+      return res.status(400).json({ erro: error.details[0].message });
+    }
+    next(); // Se a validação passar, continua para a próxima função
+  }
+  
+  // Rotas públicas (validação de dados para criar um usuário, por exemplo)
+  app.post('/usuario', validarDados, (req, res) => {
+    const { nome_user, email_user, senha_user } = req.body;
+    // Aqui você pode processar os dados, como salvar no banco de dados
+    res.status(201).json({ mensagem: `Usuário ${nome_user} criado com sucesso!` });
+  });
+
+
+
 // Rotas públicas
 app.use('/', publicRoutes);
 
@@ -57,4 +81,7 @@ app.use('/', publicRoutes);
 app.use('/private', authMiddleware, privateRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+console,log('Documentação Swagger disponível em http://localhost:${PORT}/api-docs`');
+});

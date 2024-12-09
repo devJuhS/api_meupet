@@ -1,19 +1,27 @@
-// swaggerOptions.js
-const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0', // Definir a versão da OpenAPI
-    info: {
-      title: 'Meu Pet', // Nome da sua API
-      version: '1.5.0', // Versão da sua API
-      description: 'Documentação da API com Swagger', // Descrição da sua API
+// Definir opções de configuração do Swagger
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Meu Pet',
+            version: '5.0.0',
+            description: 'Documentação da API utilizando Swagger',
+        },
+        servers: [
+            {
+                url: 'http://localhost:3000', // URL da sua API
+                description: 'API local',
+            },
+        ],
     },
-  },
-  // Caminho para os arquivos de código que terão os comentários para o Swagger
-  apis: ['./routes/public.js'], // Certifique-se de ajustar esse caminho para o local correto do seu código
+    // Caminhos dos arquivos de documentação
+    apis: ['./routes/*.js'], // Arquivos com os comentários Swagger (no caso, arquivos dentro da pasta `routes`)
 };
 
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
+// Gerar a documentação Swagger
+const swaggerSpec = swaggerJSDoc(options);
 
-module.exports = swaggerDocs;
+module.exports = { swaggerSpec, swaggerUi };
